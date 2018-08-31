@@ -1,0 +1,12 @@
+version: '3'
+services:
+  database:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_DB=leaderboard_db
+    volumes:
+      - leaderboard_pg_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+volumes:
+  leaderboard_pg_data:
