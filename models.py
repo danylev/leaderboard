@@ -6,7 +6,7 @@ from playhouse.db_url import connect
 from peewee import Model, fn, SQL
 from peewee import UUIDField, ForeignKeyField, IntegerField, DateTimeField
 
-psql_db = connect('postgresql://postgres@localhost:5432/leaderboard_db')
+psql_db = connect('postgresql+pool://postgres@localhost:5432/leaderboard_db')
 
 class BaseModel(Model):
     class Meta:

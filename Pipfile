@@ -9,6 +9,7 @@ gunicorn = "*"
 peewee = "*"
 ipython = "*"
 "psycopg2" = "*"
+ujson = "*"
 
 [dev-packages]
 

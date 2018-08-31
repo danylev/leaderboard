@@ -1,19 +1,19 @@
 from gevent import monkey
 monkey.patch_all()
 from uuid import uuid4, UUID
-import json 
+import json
 
 import falcon 
 from playhouse.shortcuts import model_to_dict
 
 from models import User, Game, Record, psql_db
 
-class UUIDEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, UUID):
-            # if the obj is uuid, we simply return the value of uuid
-            return obj.hex
-        return json.JSONEncoder.default(self, obj)
+class UUIDEncoder(json.JSONEncoder): 
+    def default(self, obj): 
+        if isinstance(obj, UUID): 
+            # if the obj is uuid, we simply return the value of uuid 
+            return obj.hex 
+        return json.JSONEncoder.default(self, obj) 
 
 class LeaderBoardResource(object):
     def __init__(self, limit=None):
@@ -30,7 +30,7 @@ class LeaderBoardResource(object):
         if 'limit' in query:
             records = records.limit(query['limit'])
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps([model_to_dict(record, recurse=False) for record in records], cls=UUIDEncoder, default=str)
+        resp.body = json.dumps([model_to_dict(record, recurse=False) for record in records], default=str, cls=UUIDEncoder)
 
     def on_post(self, req, resp):
         try:
@@ -48,19 +48,19 @@ class LeaderBoardResource(object):
                     "WHERE x.id = {id};").format(uuid =record.game, id=record.id)
         cursor = psql_db.execute_sql(query)
         data = cursor.fetchone()
-        resp.body = json.dumps({'position': data[0]})
+        resp.body = json.dumps({'position': data[0]}, default=str, cls=UUIDEncoder)
 
 class UserListResourse(object):
     def on_get(self, req, resp):
         users = User.select()
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps([model_to_dict(user) for user in users], cls=UUIDEncoder, default=str)
+        resp.body = json.dumps([model_to_dict(user) for user in users], default=str, cls=UUIDEncoder)
 
 class GameListResourse(object):
     def on_get(self, req, resp):
         games = Game.select()
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps([model_to_dict(game) for game in games], cls=UUIDEncoder)
+        resp.body = json.dumps([model_to_dict(game) for game in games], default=str, cls=UUIDEncoder)
 
 app = falcon.API()
 
