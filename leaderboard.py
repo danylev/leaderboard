@@ -24,13 +24,18 @@ class LeaderBoardResource(object):
         query = req.params
         records = Record.select().order_by(Record.game).order_by(Record.score.desc())
         if 'version' in query:
-            records = records.where(Record.game == query['version'])
+            sql_query = 'SELECT id, user_id, game_id, created_at, score from record WHERE game_id=\'{version}\' ORDER BY score DESC'.format(version=query['version'])
+            # records = records.where(Record.game == query['version'])
+            cur = psql_db.execute_sql(sql_query)
+            fetched = cur.fetchall()
+            cur.close()
+            data = [{'id': element[0], 'user': element[1], 'version': element[2], 'score': element[4], 'created_at': element[3].isoformat()} for element in fetched]
         if self.limit:
             records = records.limit(self.limit)
         if 'limit' in query:
             records = records.limit(query['limit'])
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps([model_to_dict(record, recurse=False) for record in records], default=str, cls=UUIDEncoder)
+        resp.body = json.dumps(data)
 
     def on_post(self, req, resp):
         try:
