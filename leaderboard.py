@@ -1,3 +1,5 @@
+from gevent import monkey
+monkey.patch_all()
 from uuid import uuid4, UUID
 import json 
 
