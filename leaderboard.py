@@ -1,5 +1,3 @@
-from gevent import monkey, pywsgi
-monkey.patch_all()
 from uuid import uuid4, UUID
 import json 
 
@@ -75,7 +73,3 @@ app.add_route('/leaderboard/top10', leaderboardtop10)
 app.add_route('/leaderboard/top100', leaderboardtop100)
 app.add_route('/users', users)
 app.add_route('/games', games)
-
-port = 8000
-server = pywsgi.WSGIServer(("", port), app)
-server.serve_forever()
